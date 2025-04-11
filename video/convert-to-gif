@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+
+local in="$1"
+local out="$2"
+
+ffmpeg \
+    -i "$in" \
+    -vf "fps=12,scale=1280:-1:flags=lanczos,palettegen" \
+    palette.png
+
+ffmpeg \
+    -i "$in" \
+    -i palette.png \
+    -filter_complex "[0:v]fps=12,scale=1280:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=sierra2_4a" \
+    "$out"
+
+rm palette.png
+
+
