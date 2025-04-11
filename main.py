@@ -88,25 +88,14 @@ def process_proposition_input(text: str) -> str:
         [f"{Marker.START} {sent} {Marker.END}" for sent in input_sents]
     ).strip(Marker.SEPARATOR)
 
-    console.log(
-        "create_proposition_input",
-        dict(
-            text=text,
-            input_sents=input_sents,
-            propositions_input=propositions_input,
-        ),
-    )
-
     return propositions_input
 
 
-OUTPUT_PATTERN: re.Pattern = re.compile(
-    f"{re.escape(Marker.START)}(.*?){re.escape(Marker.END)}", re.DOTALL
-)
-
-
 def process_proposition_output(text: str):
-    output_groups = re.findall(OUTPUT_PATTERN, text)
+    output_groups = re.findall(
+        re.compile(f"{re.escape(Marker.START)}(.*?){re.escape(Marker.END)}", re.DOTALL),
+        text,
+    )
     predicted_proposition_groups = []
     for group in output_groups:
         group = group.strip(Marker.SEPARATOR)
@@ -115,14 +104,6 @@ def process_proposition_output(text: str):
         ]
         predicted_proposition_groups.append(propositions)
 
-    console.log(
-        "process_proposition_output",
-        dict(
-            text=text,
-            output_groups=output_groups,
-            predicted_proposition_groups=predicted_proposition_groups,
-        ),
-    )
     return predicted_proposition_groups
 
 
